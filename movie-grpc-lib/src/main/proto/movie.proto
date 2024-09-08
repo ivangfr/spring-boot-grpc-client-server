@@ -6,11 +6,11 @@ option java_package = "com.ivanfranchin.movieserver.movie.model";
 option java_outer_classname = "MovieProto";
 
 service MovieServer {
-  rpc GetMovies(GetMoviesRequest) returns (GetMoviesResponse) {}
-  rpc GetMovie(GetMovieRequest) returns (MovieResponse) {}
-  rpc CreateMovie(CreateMovieRequest) returns (MovieResponse) {}
-  rpc UpdateMovie(UpdateMovieRequest) returns (MovieResponse) {}
-  rpc DeleteMovie(DeleteMovieRequest) returns (MovieResponse) {}
+  rpc GetMovies(GetMoviesRequest) returns (stream Movie) {}
+  rpc GetMovie(GetMovieRequest) returns (Movie) {}
+  rpc CreateMovie(CreateMovieRequest) returns (Movie) {}
+  rpc UpdateMovie(UpdateMovieRequest) returns (Movie) {}
+  rpc DeleteMovie(DeleteMovieRequest) returns (Movie) {}
 }
 
 message GetMoviesRequest {
@@ -20,10 +20,6 @@ message GetMoviesRequest {
 
 message GetMovieRequest {
   string imdbId = 1;
-}
-
-message GetMoviesResponse {
-  repeated Movie movies = 1;
 }
 
 message CreateMovieRequest {
@@ -42,10 +38,6 @@ message UpdateMovieRequest {
 
 message DeleteMovieRequest {
   string imdbId = 1;
-}
-
-message MovieResponse {
-  Movie movie = 1;
 }
 
 message Movie {

@@ -6,6 +6,8 @@ import com.ivanfranchin.movieserver.movie.model.MovieServerGrpc;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -19,19 +21,19 @@ public class MovieServiceGrpcClient {
                 .setOffset(offset)
                 .setSize(size)
                 .build();
-        MovieProto.GetMoviesResponse getMoviesResponse = stub.getMovies(getMoviesRequest);
-        return getMoviesResponse.getMoviesList()
-                .stream()
-                .map(this::toMovieResponse)
-                .toList();
+        Iterator<MovieProto.Movie> movieIterator = stub.getMovies(getMoviesRequest);
+
+        List<MovieResponse> movieResponses = new ArrayList<>();
+        movieIterator.forEachRemaining(movie -> movieResponses.add(toMovieResponse(movie)));
+        return movieResponses;
     }
 
     public MovieResponse getMovie(String imdbId) {
         MovieProto.GetMovieRequest getMovieRequest = MovieProto.GetMovieRequest.newBuilder()
                 .setImdbId(imdbId)
                 .build();
-        MovieProto.MovieResponse movieResponse = stub.getMovie(getMovieRequest);
-        return toMovieResponse(movieResponse.getMovie());
+        MovieProto.Movie movie = stub.getMovie(getMovieRequest);
+        return toMovieResponse(movie);
     }
 
     public MovieResponse createMovie(String imdbId, String title, Integer year, Genre genre) {
@@ -41,8 +43,8 @@ public class MovieServiceGrpcClient {
                 .setYear(year)
                 .setGenre(MovieProto.Genre.valueOf(genre.name()))
                 .build();
-        MovieProto.MovieResponse movieResponse = stub.createMovie(createMoviesRequest);
-        return toMovieResponse(movieResponse.getMovie());
+        MovieProto.Movie movie = stub.createMovie(createMoviesRequest);
+        return toMovieResponse(movie);
     }
 
     public MovieResponse updateMovie(String imdbId, String title, Integer year, Genre genre) {
@@ -60,16 +62,16 @@ public class MovieServiceGrpcClient {
             builder.setGenreValue(-1);
         }
         MovieProto.UpdateMovieRequest updateMovieRequest = builder.build();
-        MovieProto.MovieResponse movieResponse = stub.updateMovie(updateMovieRequest);
-        return toMovieResponse(movieResponse.getMovie());
+        MovieProto.Movie movie = stub.updateMovie(updateMovieRequest);
+        return toMovieResponse(movie);
     }
 
     public MovieResponse deleteMovie(String imdbId) {
         MovieProto.DeleteMovieRequest deleteMovieRequest = MovieProto.DeleteMovieRequest.newBuilder()
                 .setImdbId(imdbId)
                 .build();
-        MovieProto.MovieResponse movieResponse = stub.deleteMovie(deleteMovieRequest);
-        return toMovieResponse(movieResponse.getMovie());
+        MovieProto.Movie movie = stub.deleteMovie(deleteMovieRequest);
+        return toMovieResponse(movie);
     }
 
     private MovieResponse toMovieResponse(MovieProto.Movie movie) {

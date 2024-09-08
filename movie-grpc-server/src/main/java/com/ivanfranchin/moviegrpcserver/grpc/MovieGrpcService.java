@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 
-import java.util.List;
-
 @Slf4j
 @RequiredArgsConstructor
 @GrpcService
@@ -22,27 +20,23 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
     private final MovieService movieService;
 
     @Override
-    public void getMovies(MovieProto.GetMoviesRequest request, StreamObserver<MovieProto.GetMoviesResponse> responseObserver) {
-        List<MovieProto.Movie> movieProtoMovies = movieService.getMovies(request.getOffset(), request.getSize())
+    public void getMovies(MovieProto.GetMoviesRequest request, StreamObserver<MovieProto.Movie> responseObserver) {
+        movieService.getMovies(request.getOffset(), request.getSize())
                 .stream()
                 .map(this::toMovieProtoMovie)
-                .toList();
-
-        MovieProto.GetMoviesResponse movies = MovieProto.GetMoviesResponse.newBuilder().addAllMovies(movieProtoMovies).build();
-        responseObserver.onNext(movies);
+                .forEach(responseObserver::onNext);
         responseObserver.onCompleted();
 
         log.info("Get movies with offset {} and size {}", request.getOffset(), request.getSize());
     }
 
     @Override
-    public void getMovie(MovieProto.GetMovieRequest request, StreamObserver<MovieProto.MovieResponse> responseObserver) {
+    public void getMovie(MovieProto.GetMovieRequest request, StreamObserver<MovieProto.Movie> responseObserver) {
         try {
             Movie movie = movieService.validateAndGetMovieById(request.getImdbId());
 
             MovieProto.Movie movieProtoMovie = toMovieProtoMovie(movie);
-            MovieProto.MovieResponse createMoviesResponse = MovieProto.MovieResponse.newBuilder().setMovie(movieProtoMovie).build();
-            responseObserver.onNext(createMoviesResponse);
+            responseObserver.onNext(movieProtoMovie);
             responseObserver.onCompleted();
 
             log.info("Get movie {}", movie);
@@ -53,20 +47,19 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
     }
 
     @Override
-    public void createMovie(MovieProto.CreateMovieRequest request, StreamObserver<MovieProto.MovieResponse> responseObserver) {
+    public void createMovie(MovieProto.CreateMovieRequest request, StreamObserver<MovieProto.Movie> responseObserver) {
         Movie movie = toMovie(request);
         movie = movieService.saveMovie(movie);
 
         MovieProto.Movie movieProtoMovie = toMovieProtoMovie(movie);
-        MovieProto.MovieResponse createMoviesResponse = MovieProto.MovieResponse.newBuilder().setMovie(movieProtoMovie).build();
-        responseObserver.onNext(createMoviesResponse);
+        responseObserver.onNext(movieProtoMovie);
         responseObserver.onCompleted();
 
         log.info("Created movie {}", movie);
     }
 
     @Override
-    public void updateMovie(MovieProto.UpdateMovieRequest request, StreamObserver<MovieProto.MovieResponse> responseObserver) {
+    public void updateMovie(MovieProto.UpdateMovieRequest request, StreamObserver<MovieProto.Movie> responseObserver) {
         try {
             Movie movie = movieService.validateAndGetMovieById(request.getImdbId());
             updateMovieFrom(movie, request);
@@ -74,8 +67,7 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
             movieService.saveMovie(movie);
 
             MovieProto.Movie movieProtoMovie = toMovieProtoMovie(movie);
-            MovieProto.MovieResponse createMoviesResponse = MovieProto.MovieResponse.newBuilder().setMovie(movieProtoMovie).build();
-            responseObserver.onNext(createMoviesResponse);
+            responseObserver.onNext(movieProtoMovie);
             responseObserver.onCompleted();
 
             log.info("Updated movie {}", movie);
@@ -86,14 +78,13 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
     }
 
     @Override
-    public void deleteMovie(MovieProto.DeleteMovieRequest request, StreamObserver<MovieProto.MovieResponse> responseObserver) {
+    public void deleteMovie(MovieProto.DeleteMovieRequest request, StreamObserver<MovieProto.Movie> responseObserver) {
         try {
             Movie movie = movieService.validateAndGetMovieById(request.getImdbId());
             movieService.deleteMovie(movie);
 
             MovieProto.Movie movieProtoMovie = toMovieProtoMovie(movie);
-            MovieProto.MovieResponse createMoviesResponse = MovieProto.MovieResponse.newBuilder().setMovie(movieProtoMovie).build();
-            responseObserver.onNext(createMoviesResponse);
+            responseObserver.onNext(movieProtoMovie);
             responseObserver.onCompleted();
 
             log.info("Deleted movie {}", movie);
