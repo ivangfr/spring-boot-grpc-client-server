@@ -1,9 +1,8 @@
-package com.ivanfranchin.moviegrpcserver.grpc;
+package com.ivanfranchin.moviegrpcserver.movie;
 
-import com.ivanfranchin.moviegrpcserver.exception.MovieNotFoundException;
-import com.ivanfranchin.moviegrpcserver.model.Genre;
-import com.ivanfranchin.moviegrpcserver.model.Movie;
-import com.ivanfranchin.moviegrpcserver.service.MovieService;
+import com.ivanfranchin.moviegrpcserver.movie.exception.MovieNotFoundException;
+import com.ivanfranchin.moviegrpcserver.movie.model.Genre;
+import com.ivanfranchin.moviegrpcserver.movie.model.Movie;
 import com.ivanfranchin.movieserver.movie.model.MovieProto;
 import com.ivanfranchin.movieserver.movie.model.MovieServerGrpc;
 import io.grpc.Status;

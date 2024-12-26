@@ -1,4 +1,4 @@
-package com.ivanfranchin.moviegrpcserver.exception;
+package com.ivanfranchin.moviegrpcserver.movie.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,4 +1,4 @@
-package com.ivanfranchin.moviegrpcserver.model;
+package com.ivanfranchin.moviegrpcserver.movie.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
