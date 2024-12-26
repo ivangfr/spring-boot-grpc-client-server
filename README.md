@@ -1,6 +1,6 @@
 # spring-boot-grpc-client-server
 
-This project aims to create two [`Spring Boot`](https://docs.spring.io/spring-boot/index.html) applications using [`gRPC`](https://grpc.io/): `movie-grpc-server` and `movie-grpc-client`. The `movie-grpc-lib` project defines the `gRPC` interface that both applications use.
+The goal of this project is to implement two [`Spring Boot`](https://docs.spring.io/spring-boot/index.html) applications using [`gRPC`](https://grpc.io/): the server, called `movie-grpc-server`, and the shell client, named `movie-grpc-client`. The library `movie-grpc-lib` defines the `gRPC` interface that both the server and client applications use.
 
 ## Proof-of-Concepts & Articles
 
