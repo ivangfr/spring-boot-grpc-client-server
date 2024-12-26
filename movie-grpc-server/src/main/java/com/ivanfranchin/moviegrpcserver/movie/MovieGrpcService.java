@@ -1,7 +1,6 @@
 package com.ivanfranchin.moviegrpcserver.movie;
 
 import com.ivanfranchin.moviegrpcserver.movie.exception.MovieNotFoundException;
-import com.ivanfranchin.moviegrpcserver.movie.model.Genre;
 import com.ivanfranchin.moviegrpcserver.movie.model.Movie;
 import com.ivanfranchin.movieserver.movie.model.MovieProto;
 import com.ivanfranchin.movieserver.movie.model.MovieServerGrpc;
@@ -22,7 +21,7 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
     public void getMovies(MovieProto.GetMoviesRequest request, StreamObserver<MovieProto.Movie> responseObserver) {
         movieService.getMovies(request.getOffset(), request.getSize())
                 .stream()
-                .map(this::toMovieProtoMovie)
+                .map(Movie::toProto)
                 .forEach(responseObserver::onNext);
         responseObserver.onCompleted();
 
@@ -34,7 +33,7 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
         try {
             Movie movie = movieService.validateAndGetMovieById(request.getImdbId());
 
-            MovieProto.Movie movieProtoMovie = toMovieProtoMovie(movie);
+            MovieProto.Movie movieProtoMovie = movie.toProto();
             responseObserver.onNext(movieProtoMovie);
             responseObserver.onCompleted();
 
@@ -47,10 +46,10 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
 
     @Override
     public void createMovie(MovieProto.CreateMovieRequest request, StreamObserver<MovieProto.Movie> responseObserver) {
-        Movie movie = toMovie(request);
+        Movie movie = Movie.from(request);
         movie = movieService.saveMovie(movie);
 
-        MovieProto.Movie movieProtoMovie = toMovieProtoMovie(movie);
+        MovieProto.Movie movieProtoMovie = movie.toProto();
         responseObserver.onNext(movieProtoMovie);
         responseObserver.onCompleted();
 
@@ -61,11 +60,11 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
     public void updateMovie(MovieProto.UpdateMovieRequest request, StreamObserver<MovieProto.Movie> responseObserver) {
         try {
             Movie movie = movieService.validateAndGetMovieById(request.getImdbId());
-            updateMovieFrom(movie, request);
+            Movie.updateFrom(request, movie);
 
             movieService.saveMovie(movie);
 
-            MovieProto.Movie movieProtoMovie = toMovieProtoMovie(movie);
+            MovieProto.Movie movieProtoMovie = movie.toProto();
             responseObserver.onNext(movieProtoMovie);
             responseObserver.onCompleted();
 
@@ -82,7 +81,7 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
             Movie movie = movieService.validateAndGetMovieById(request.getImdbId());
             movieService.deleteMovie(movie);
 
-            MovieProto.Movie movieProtoMovie = toMovieProtoMovie(movie);
+            MovieProto.Movie movieProtoMovie = movie.toProto();
             responseObserver.onNext(movieProtoMovie);
             responseObserver.onCompleted();
 
@@ -91,31 +90,5 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
             log.error("Error while deleting movie with imdbId {}. Not found.", request.getImdbId());
             responseObserver.onError((Status.NOT_FOUND.withDescription(e.getMessage())).asRuntimeException());
         }
-    }
-
-    private void updateMovieFrom(Movie movie, MovieProto.UpdateMovieRequest request) {
-        if (!request.getTitle().isEmpty()) {
-            movie.setTitle(request.getTitle());
-        }
-        if (request.getYear() != 0) {
-            movie.setYear(request.getYear());
-        }
-        if (request.getGenreValue() >= 0) {
-            movie.setGenre(Genre.valueOf(request.getGenre().name()));
-        }
-    }
-
-    private MovieProto.Movie toMovieProtoMovie(Movie movie) {
-        return MovieProto.Movie.newBuilder()
-                .setImdbId(movie.getImdbId())
-                .setTitle(movie.getTitle())
-                .setYear(movie.getYear())
-                .setGenre(MovieProto.Genre.valueOf(movie.getGenre().name()))
-                .build();
-    }
-
-    private Movie toMovie(MovieProto.CreateMovieRequest request) {
-        Genre genre = Genre.valueOf(request.getGenre().name());
-        return new Movie(request.getImdbId(), request.getTitle(), request.getYear(), genre);
     }
 }

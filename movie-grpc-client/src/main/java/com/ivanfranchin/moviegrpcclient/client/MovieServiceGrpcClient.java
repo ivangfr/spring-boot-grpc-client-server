@@ -24,7 +24,7 @@ public class MovieServiceGrpcClient {
         Iterator<MovieProto.Movie> movieIterator = stub.getMovies(getMoviesRequest);
 
         List<MovieResponse> movieResponses = new ArrayList<>();
-        movieIterator.forEachRemaining(movie -> movieResponses.add(toMovieResponse(movie)));
+        movieIterator.forEachRemaining(movie -> movieResponses.add(MovieResponse.from(movie)));
         return movieResponses;
     }
 
@@ -33,7 +33,7 @@ public class MovieServiceGrpcClient {
                 .setImdbId(imdbId)
                 .build();
         MovieProto.Movie movie = stub.getMovie(getMovieRequest);
-        return toMovieResponse(movie);
+        return MovieResponse.from(movie);
     }
 
     public MovieResponse createMovie(String imdbId, String title, Integer year, Genre genre) {
@@ -44,7 +44,7 @@ public class MovieServiceGrpcClient {
                 .setGenre(MovieProto.Genre.valueOf(genre.name()))
                 .build();
         MovieProto.Movie movie = stub.createMovie(createMoviesRequest);
-        return toMovieResponse(movie);
+        return MovieResponse.from(movie);
     }
 
     public MovieResponse updateMovie(String imdbId, String title, Integer year, Genre genre) {
@@ -63,7 +63,7 @@ public class MovieServiceGrpcClient {
         }
         MovieProto.UpdateMovieRequest updateMovieRequest = builder.build();
         MovieProto.Movie movie = stub.updateMovie(updateMovieRequest);
-        return toMovieResponse(movie);
+        return MovieResponse.from(movie);
     }
 
     public MovieResponse deleteMovie(String imdbId) {
@@ -71,10 +71,6 @@ public class MovieServiceGrpcClient {
                 .setImdbId(imdbId)
                 .build();
         MovieProto.Movie movie = stub.deleteMovie(deleteMovieRequest);
-        return toMovieResponse(movie);
-    }
-
-    private MovieResponse toMovieResponse(MovieProto.Movie movie) {
-        return new MovieResponse(movie.getImdbId(), movie.getTitle(), movie.getYear(), movie.getGenre().name());
+        return MovieResponse.from(movie);
     }
 }
