@@ -26,7 +26,7 @@
     </scm>
     <properties>
         <java.version>21</java.version>
-        <spring-shell.version>3.3.1</spring-shell.version>
+        <spring-shell.version>3.4.0</spring-shell.version>
         <grpc-springboot.version>3.1.0.RELEASE</grpc-springboot.version>
         <movie-grpc-lib.version>0.0.1-SNAPSHOT</movie-grpc-lib.version>
     </properties>
@@ -77,6 +77,18 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

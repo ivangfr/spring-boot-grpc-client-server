@@ -26,7 +26,7 @@ On [ivangfr.github.io](https://ivangfr.github.io), I have compiled my Proof-of-C
 
 ## Packaging and Installing movie-grpc-lib
 
-In a terminal and inside `spring-boot-grpc-client-server` root folder, run the command below:
+In a terminal and inside the `spring-boot-grpc-client-server` root folder, run the command below:
 ```
 ./mvnw clean install --projects movie-grpc-lib
 ```
@@ -40,21 +40,21 @@ docker run -d --name postgres \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_DB=moviesdb \
-  postgres:16.3
+  postgres:17.2
 ```
 
 ## Running applications
 
 - **movie-grpc-server**
 
-  In a terminal and inside `spring-boot-grpc-client-server` root folder, run the following command:
+  In a terminal and inside the `spring-boot-grpc-client-server` root folder, run the following command:
   ```
   ./mvnw clean spring-boot:run --projects movie-grpc-server
   ```
 
 - **movie-grpc-client**
 
-  Open another terminal, make sure you are in `spring-boot-grpc-client-server` root folder. Then, run the command below to build the executable jar file:
+  Open another terminal, make sure you are in the `spring-boot-grpc-client-server` root folder. Then, run the command below to build the executable jar file:
   ```
   ./mvnw clean package --projects movie-grpc-client -DskipTests
   ```
@@ -71,7 +71,7 @@ docker run -d --name postgres \
 ## Shutdown
 
 - To stop the applications, go to the terminals where they are running and press `Ctrl+C`;
-- To stop the postgres Docker container, run:
+- To stop the `postgres` Docker container, run:
   ```
   docker rm -fv postgres
   ```
