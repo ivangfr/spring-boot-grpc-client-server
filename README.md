@@ -22,25 +22,30 @@ On [ivangfr.github.io](https://ivangfr.github.io), I have compiled my Proof-of-C
 
 - **movie-grpc-client**
 
-  A Spring Boot shell application that has `movie-grpc-lib` as dependency. It has a `stub` used to call `movie-grpc-server` functions.
+  A Spring Boot shell application that has `movie-grpc-lib` as dependency. It uses a `stub` to call `movie-grpc-server` functions.
+
+## Prerequisites
+
+- [`Java 21`](https://www.oracle.com/java/technologies/downloads/#java21) or higher;
+- A containerization tool (e.g., [`Docker`](https://www.docker.com), [`Podman`](https://podman.io), etc.)
 
 ## Packaging and Installing movie-grpc-lib
 
 In a terminal and inside the `spring-boot-grpc-client-server` root folder, run the command below:
-```
+```bash
 ./mvnw clean install --projects movie-grpc-lib
 ```
 
 ## Start PostgreSQL Docker container
 
 Run the command below to start `postgres` Docker container
-```
+```bash
 docker run -d --name postgres \
   -p 5432:5432 \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_DB=moviesdb \
-  postgres:17.2
+  postgres:17.6
 ```
 
 ## Running applications
@@ -48,19 +53,19 @@ docker run -d --name postgres \
 - **movie-grpc-server**
 
   In a terminal and inside the `spring-boot-grpc-client-server` root folder, run the following command:
-  ```
+  ```bash
   ./mvnw clean spring-boot:run --projects movie-grpc-server
   ```
 
 - **movie-grpc-client**
 
-  Open another terminal, make sure you are in the `spring-boot-grpc-client-server` root folder. Then, run the command below to build the executable jar file:
-  ```
+  Open another terminal and make sure you are in the `spring-boot-grpc-client-server` root folder. Then, run the command below to build the executable jar file:
+  ```bash
   ./mvnw clean package --projects movie-grpc-client -DskipTests
   ```
 
   Finally, to start the client shell, run:
-  ```
+  ```bash
   ./movie-grpc-client/target/movie-grpc-client-0.0.1-SNAPSHOT.jar
   ```
 
@@ -70,8 +75,8 @@ docker run -d --name postgres \
 
 ## Shutdown
 
-- To stop the applications, go to the terminals where they are running and press `Ctrl+C`;
+- To stop the applications, go to the terminals where they are running and press `Ctrl+C`.
 - To stop the `postgres` Docker container, run:
-  ```
+  ```bash
   docker rm -fv postgres
   ```
