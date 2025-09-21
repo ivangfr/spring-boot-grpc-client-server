@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <protobuf.version>3.25.5</protobuf.version>
         <protobuf-plugin.version>0.6.1</protobuf-plugin.version>
-        <grpc.version>1.69.0</grpc.version>
+        <grpc.version>1.74.0</grpc.version>
         <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
     </properties>
     <dependencies>
