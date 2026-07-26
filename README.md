@@ -75,3 +75,18 @@ docker run -d --name postgres \
   ```bash
   docker rm -fv postgres
   ```
+
+## Running Tests
+
+- **Run all tests (both movie-grpc-server and movie-grpc-client)**
+
+  ```bash
+  ./mvnw clean test
+  ```
+
+- **Run tests for a single module**
+
+  ```bash
+  ./mvnw clean test --projects movie-grpc-server
+  ./mvnw clean test --projects movie-grpc-client
+  ```
