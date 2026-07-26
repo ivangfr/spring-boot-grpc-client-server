@@ -29,10 +29,38 @@
     </scm>
     <properties>
         <java.version>25</java.version>
+        <spotless.version>3.8.0</spotless.version>
     </properties>
     <modules>
         <module>movie-grpc-lib</module>
         <module>movie-grpc-server</module>
         <module>movie-grpc-client</module>
     </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
+                <configuration>
+                    <java>
+                        <googleJavaFormat>
+                            <style>GOOGLE</style>
+                        </googleJavaFormat>
+                        <removeUnusedImports/>
+                        <forbidWildcardImports/>
+                        <formatAnnotations/>
+                    </java>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

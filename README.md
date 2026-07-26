@@ -13,7 +13,7 @@ On [ivangfr.github.io](https://ivangfr.github.io), I have compiled my Proof-of-C
 
 - \[**Medium**\] [**Implementing gRPC Server and Client using Spring Boot**](https://medium.com/@ivangfr/implementing-grpc-server-and-client-using-spring-boot-4411b26138be)
 
-## Architecture
+## Project Overview
 
 ```mermaid
 flowchart LR
@@ -124,6 +124,22 @@ docker run -d --name postgres \
   ./mvnw clean test --projects movie-grpc-server
   ./mvnw clean test --projects movie-grpc-client
   ```
+
+## Code Formatting
+
+This project enforces consistent Java formatting using the [Spotless](https://github.com/diffplug/spotless/tree/main/plugin-maven) Maven plugin with [google-java-format](https://github.com/google/google-java-format) (GOOGLE style).
+
+- **Check formatting**:
+  ```bash
+  ./mvnw spotless:check
+  ```
+
+- **Auto-fix formatting**:
+  ```bash
+  ./mvnw spotless:apply
+  ```
+
+Formatting is enforced automatically during `./mvnw test`.
 
 ## How to optimize the GIF in the documentation folder
 
