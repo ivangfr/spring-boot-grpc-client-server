@@ -18,15 +18,15 @@ On [ivangfr.github.io](https://ivangfr.github.io), I have compiled my Proof-of-C
 
 - **movie-grpc-server**
 
-  A Spring Boot web application that has `movie-grpc-lib` as dependency. It implements the `gRPC` functions for managing movies and runs a `gRPC` server to handle `movie-grpc-client` calls. The movies are stored in a [`PostgreSQL`](https://www.postgresql.org/) database.
+  A Spring Boot web application that has `movie-grpc-lib` as a dependency. It implements the `gRPC` functions for managing movies and runs a `gRPC` server to handle `movie-grpc-client` calls. The movies are stored in a [`PostgreSQL`](https://www.postgresql.org/) database.
 
 - **movie-grpc-client**
 
-  A Spring Boot shell application that has `movie-grpc-lib` as dependency. It uses a `stub` to call `movie-grpc-server` functions.
+  A Spring Boot shell application that has `movie-grpc-lib` as a dependency. It uses a `stub` to call `movie-grpc-server` functions.
 
 ## Prerequisites
 
-- [`Java 21`](https://www.oracle.com/java/technologies/downloads/#java21) or higher;
+- [`Java 25`](https://www.oracle.com/java/technologies/downloads/#java25) or higher;
 - A containerization tool (e.g., [`Docker`](https://www.docker.com), [`Podman`](https://podman.io), etc.)
 
 ## Packaging and Installing movie-grpc-lib
@@ -38,14 +38,14 @@ In a terminal and inside the `spring-boot-grpc-client-server` root folder, run t
 
 ## Start PostgreSQL Docker container
 
-Run the command below to start `postgres` Docker container
+Run the command below to start the `postgres` Docker container
 ```bash
 docker run -d --name postgres \
   -p 5432:5432 \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -e POSTGRES_DB=moviesdb \
-  postgres:17.6
+  postgres:18.4
 ```
 
 ## Running applications
@@ -59,14 +59,9 @@ docker run -d --name postgres \
 
 - **movie-grpc-client**
 
-  Open another terminal and make sure you are in the `spring-boot-grpc-client-server` root folder. Then, run the command below to build the executable jar file:
+  Open another terminal and make sure you are in the `spring-boot-grpc-client-server` root folder. Then, run the command below:
   ```bash
-  ./mvnw clean package --projects movie-grpc-client -DskipTests
-  ```
-
-  Finally, to start the client shell, run:
-  ```bash
-  ./movie-grpc-client/target/movie-grpc-client-0.0.1-SNAPSHOT.jar
+  ./mvnw clean spring-boot:run --projects movie-grpc-client
   ```
 
 ## Demo

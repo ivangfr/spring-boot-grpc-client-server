@@ -14,7 +14,7 @@ service MovieServer {
 }
 
 message GetMoviesRequest {
-  int32 offset = 1;
+  int32 page = 1;
   int32 size = 2;
 }
 
@@ -31,9 +31,9 @@ message CreateMovieRequest {
 
 message UpdateMovieRequest {
   string imdbId = 1;
-  string title = 2;
-  int32 year = 3;
-  Genre genre = 4;
+  optional string title = 2;
+  optional int32 year = 3;
+  optional Genre genre = 4;
 }
 
 message DeleteMovieRequest {

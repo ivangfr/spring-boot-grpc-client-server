@@ -3,47 +3,49 @@ package com.ivanfranchin.moviegrpcclient.command;
 import com.ivanfranchin.moviegrpcclient.client.MovieResponse;
 import com.ivanfranchin.moviegrpcclient.client.MovieServiceGrpcClient;
 import lombok.RequiredArgsConstructor;
-import org.springframework.shell.standard.ShellComponent;
-import org.springframework.shell.standard.ShellMethod;
-import org.springframework.shell.standard.ShellOption;
+import org.springframework.shell.core.command.annotation.Command;
+import org.springframework.shell.core.command.annotation.Option;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @RequiredArgsConstructor
-@ShellComponent
+@Component
 public class MoviesCommands {
 
     private final MovieServiceGrpcClient movieServiceGrpcClient;
 
-    @ShellMethod("Get movies")
+    @Command(name = "get-movies", description = "Get movies")
     public List<MovieResponse> getMovies(
-            @ShellOption(defaultValue = "0") int offset,
-            @ShellOption(defaultValue = "10") int size) {
-        return movieServiceGrpcClient.getMovies(offset, size);
+            @Option(longName = "page", defaultValue = "0") int page,
+            @Option(longName = "size", defaultValue = "10") int size) {
+        return movieServiceGrpcClient.getMovies(page, size);
     }
 
-    @ShellMethod("Get movie")
-    public MovieResponse getMovie(String imdbId) {
+    @Command(name = "get-movie", description = "Get movie")
+    public MovieResponse getMovie(@Option(longName = "imdbId", required = true) String imdbId) {
         return movieServiceGrpcClient.getMovie(imdbId);
     }
 
-    @ShellMethod("Create movie")
-    public MovieResponse createMovie(String imdbId, String title, Integer year,
-                                     @ShellOption() Genre genre) {
+    @Command(name = "create-movie", description = "Create movie")
+    public MovieResponse createMovie(@Option(longName = "imdbId", required = true) String imdbId,
+                                     @Option(longName = "title", required = true) String title,
+                                     @Option(longName = "year", required = true) Integer year,
+                                     @Option(longName = "genre", required = true) Genre genre) {
         return movieServiceGrpcClient.createMovie(imdbId, title, year, genre);
     }
 
-    @ShellMethod("Update movie")
+    @Command(name = "update-movie", description = "Update movie")
     public MovieResponse updateMovie(
-            String imdbId,
-            @ShellOption(defaultValue = ShellOption.NULL) String title,
-            @ShellOption(defaultValue = ShellOption.NULL) Integer year,
-            @ShellOption(defaultValue = ShellOption.NULL) Genre genre) {
+            @Option(longName = "imdbId", required = true) String imdbId,
+            @Option(longName = "title") String title,
+            @Option(longName = "year") Integer year,
+            @Option(longName = "genre") Genre genre) {
         return movieServiceGrpcClient.updateMovie(imdbId, title, year, genre);
     }
 
-    @ShellMethod("Delete movie")
-    public MovieResponse deleteMovie(String imdbId) {
+    @Command(name = "delete-movie", description = "Delete movie")
+    public MovieResponse deleteMovie(@Option(longName = "imdbId", required = true) String imdbId) {
         return movieServiceGrpcClient.deleteMovie(imdbId);
     }
 }

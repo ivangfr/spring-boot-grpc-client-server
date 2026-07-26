@@ -1,6 +1,8 @@
 package com.ivanfranchin.moviegrpcserver.movie;
 
+import com.ivanfranchin.moviegrpcserver.movie.exception.MovieAlreadyExistsException;
 import com.ivanfranchin.moviegrpcserver.movie.exception.MovieNotFoundException;
+import com.ivanfranchin.moviegrpcserver.movie.mapper.MovieMapper;
 import com.ivanfranchin.moviegrpcserver.movie.model.Movie;
 import com.ivanfranchin.movieserver.movie.model.MovieProto;
 import com.ivanfranchin.movieserver.movie.model.MovieServerGrpc;
@@ -19,13 +21,18 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
 
     @Override
     public void getMovies(MovieProto.GetMoviesRequest request, StreamObserver<MovieProto.Movie> responseObserver) {
-        movieService.getMovies(request.getOffset(), request.getSize())
-                .stream()
-                .map(Movie::toProto)
-                .forEach(responseObserver::onNext);
-        responseObserver.onCompleted();
+        try {
+            movieService.getMovies(request.getPage(), request.getSize())
+                    .stream()
+                    .map(MovieMapper::toProto)
+                    .forEach(responseObserver::onNext);
+            responseObserver.onCompleted();
 
-        log.info("Get movies with offset {} and size {}", request.getOffset(), request.getSize());
+            log.info("Get movies with page {} and size {}", request.getPage(), request.getSize());
+        } catch (Exception e) {
+            log.error("Error while getting movies", e);
+            responseObserver.onError(Status.INTERNAL.withDescription(e.getMessage()).asRuntimeException());
+        }
     }
 
     @Override
@@ -33,7 +40,7 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
         try {
             Movie movie = movieService.validateAndGetMovieById(request.getImdbId());
 
-            MovieProto.Movie movieProtoMovie = movie.toProto();
+            MovieProto.Movie movieProtoMovie = MovieMapper.toProto(movie);
             responseObserver.onNext(movieProtoMovie);
             responseObserver.onCompleted();
 
@@ -46,25 +53,33 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
 
     @Override
     public void createMovie(MovieProto.CreateMovieRequest request, StreamObserver<MovieProto.Movie> responseObserver) {
-        Movie movie = Movie.from(request);
-        movie = movieService.saveMovie(movie);
+        try {
+            Movie movie = MovieMapper.fromCreateRequest(request);
+            movie = movieService.createMovie(movie);
 
-        MovieProto.Movie movieProtoMovie = movie.toProto();
-        responseObserver.onNext(movieProtoMovie);
-        responseObserver.onCompleted();
+            MovieProto.Movie movieProtoMovie = MovieMapper.toProto(movie);
+            responseObserver.onNext(movieProtoMovie);
+            responseObserver.onCompleted();
 
-        log.info("Created movie {}", movie);
+            log.info("Created movie {}", movie);
+        } catch (MovieAlreadyExistsException e) {
+            log.error("Error while creating movie with imdbId {}. Already exists.", request.getImdbId());
+            responseObserver.onError((Status.ALREADY_EXISTS.withDescription(e.getMessage())).asRuntimeException());
+        } catch (Exception e) {
+            log.error("Error while creating movie", e);
+            responseObserver.onError(Status.INTERNAL.withDescription(e.getMessage()).asRuntimeException());
+        }
     }
 
     @Override
     public void updateMovie(MovieProto.UpdateMovieRequest request, StreamObserver<MovieProto.Movie> responseObserver) {
         try {
             Movie movie = movieService.validateAndGetMovieById(request.getImdbId());
-            Movie.updateFrom(request, movie);
+            MovieMapper.updateFromUpdateRequest(request, movie);
 
             movieService.saveMovie(movie);
 
-            MovieProto.Movie movieProtoMovie = movie.toProto();
+            MovieProto.Movie movieProtoMovie = MovieMapper.toProto(movie);
             responseObserver.onNext(movieProtoMovie);
             responseObserver.onCompleted();
 
@@ -72,6 +87,9 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
         } catch (MovieNotFoundException e) {
             log.error("Error while updating movie with imdbId {}. Not found.", request.getImdbId());
             responseObserver.onError((Status.NOT_FOUND.withDescription(e.getMessage())).asRuntimeException());
+        } catch (Exception e) {
+            log.error("Error while updating movie", e);
+            responseObserver.onError(Status.INTERNAL.withDescription(e.getMessage()).asRuntimeException());
         }
     }
 
@@ -81,7 +99,7 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
             Movie movie = movieService.validateAndGetMovieById(request.getImdbId());
             movieService.deleteMovie(movie);
 
-            MovieProto.Movie movieProtoMovie = movie.toProto();
+            MovieProto.Movie movieProtoMovie = MovieMapper.toProto(movie);
             responseObserver.onNext(movieProtoMovie);
             responseObserver.onCompleted();
 
@@ -89,6 +107,9 @@ public class MovieGrpcService extends MovieServerGrpc.MovieServerImplBase {
         } catch (MovieNotFoundException e) {
             log.error("Error while deleting movie with imdbId {}. Not found.", request.getImdbId());
             responseObserver.onError((Status.NOT_FOUND.withDescription(e.getMessage())).asRuntimeException());
+        } catch (Exception e) {
+            log.error("Error while deleting movie", e);
+            responseObserver.onError(Status.INTERNAL.withDescription(e.getMessage()).asRuntimeException());
         }
     }
 }
