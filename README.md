@@ -1,5 +1,8 @@
 # spring-boot-grpc-client-server
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-ivan.franchin-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/ivan.franchin)
+
 The goal of this project is to implement two [`Spring Boot`](https://docs.spring.io/spring-boot/index.html) applications using [`gRPC`](https://grpc.io/): the server, called `movie-grpc-server`, and the shell client, named `movie-grpc-client`. The library `movie-grpc-lib` defines the `gRPC` interface that both the server and client applications use.
 
 ## Proof-of-Concepts & Articles
@@ -9,6 +12,37 @@ On [ivangfr.github.io](https://ivangfr.github.io), I have compiled my Proof-of-C
 ## Additional Readings
 
 - \[**Medium**\] [**Implementing gRPC Server and Client using Spring Boot**](https://medium.com/@ivangfr/implementing-grpc-server-and-client-using-spring-boot-4411b26138be)
+
+## Architecture
+
+```mermaid
+flowchart LR
+    subgraph users ["Users"]
+        Shell["Shell / Terminal"]
+    end
+
+    subgraph movie-grpc-client ["movie-grpc-client\n(Spring Boot Shell)"]
+        MoviesCommands["MoviesCommands"]
+        MovieServiceGrpcClient["MovieServiceGrpcClient\n(gRPC Stub)"]
+    end
+
+    subgraph movie-grpc-server ["movie-grpc-server\n(Spring Boot)"]
+        MovieGrpcService["MovieGrpcService\ngRPC :9090"]
+        MovieService["MovieService"]
+        MovieRepository["MovieRepository\n(Spring Data JPA)"]
+    end
+
+    subgraph postgresql ["PostgreSQL"]
+        db[("moviesdb")]
+    end
+
+    Shell -->|"types commands"| MoviesCommands
+    MoviesCommands -->|"calls"| MovieServiceGrpcClient
+    MovieServiceGrpcClient -->|"gRPC"| MovieGrpcService
+    MovieGrpcService -->|"calls"| MovieService
+    MovieService -->|"queries"| MovieRepository
+    MovieRepository -->|"JDBC"| db
+```
 
 ## Applications
 
@@ -90,3 +124,17 @@ docker run -d --name postgres \
   ./mvnw clean test --projects movie-grpc-server
   ./mvnw clean test --projects movie-grpc-client
   ```
+
+## How to optimize the GIF in the documentation folder
+
+\[**Medium**\]: [**How I Reduce GIF and Screenshot Sizes for My Technical Articles on macOS**](https://medium.com/itnext/how-i-reduce-gif-and-screenshot-sizes-for-my-technical-articles-on-macos-7fea331afc68)
+
+## Support
+
+If you find this useful, consider buying me a coffee:
+
+<a href="https://buymeacoffee.com/ivan.franchin"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="50"></a>
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).
