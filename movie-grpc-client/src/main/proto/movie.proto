@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package model;
 
-option java_package = "com.ivanfranchin.movieserver.movie.model";
+option java_package = "com.ivanfranchin.moviegrpcclient.proto";
 option java_outer_classname = "MovieProto";
 
 service MovieServer {

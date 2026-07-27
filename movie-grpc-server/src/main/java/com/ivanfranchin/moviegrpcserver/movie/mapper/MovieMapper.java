@@ -2,7 +2,7 @@ package com.ivanfranchin.moviegrpcserver.movie.mapper;
 
 import com.ivanfranchin.moviegrpcserver.movie.model.Genre;
 import com.ivanfranchin.moviegrpcserver.movie.model.Movie;
-import com.ivanfranchin.movieserver.movie.model.MovieProto;
+import com.ivanfranchin.moviegrpcserver.proto.MovieProto;
 
 public class MovieMapper {
 

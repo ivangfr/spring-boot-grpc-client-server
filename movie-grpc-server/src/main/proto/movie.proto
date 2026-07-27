@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package model;
+
+option java_package = "com.ivanfranchin.moviegrpcserver.proto";
+option java_outer_classname = "MovieProto";
+
+service MovieServer {
+  rpc GetMovies(GetMoviesRequest) returns (stream Movie) {}
+  rpc GetMovie(GetMovieRequest) returns (Movie) {}
+  rpc CreateMovie(CreateMovieRequest) returns (Movie) {}
+  rpc UpdateMovie(UpdateMovieRequest) returns (Movie) {}
+  rpc DeleteMovie(DeleteMovieRequest) returns (Movie) {}
+}
+
+message GetMoviesRequest {
+  int32 page = 1;
+  int32 size = 2;
+}
+
+message GetMovieRequest {
+  string imdbId = 1;
+}
+
+message CreateMovieRequest {
+  string imdbId = 1;
+  string title = 2;
+  int32 year = 3;
+  Genre genre = 4;
+}
+
+message UpdateMovieRequest {
+  string imdbId = 1;
+  optional string title = 2;
+  optional int32 year = 3;
+  optional Genre genre = 4;
+}
+
+message DeleteMovieRequest {
+  string imdbId = 1;
+}
+
+message Movie {
+  string imdbId = 1;
+  string title = 2;
+  int32 year = 3;
+  Genre genre = 4;
+}
+
+enum Genre {
+  ACTION = 0;
+  DRAMA = 1;
+  HORROR = 2;
+  COMEDY = 3;
+}

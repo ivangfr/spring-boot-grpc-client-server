@@ -32,7 +32,6 @@
         <spotless.version>3.8.0</spotless.version>
     </properties>
     <modules>
-        <module>movie-grpc-lib</module>
         <module>movie-grpc-server</module>
         <module>movie-grpc-client</module>
     </modules>

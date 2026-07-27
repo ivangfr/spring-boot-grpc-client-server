@@ -10,7 +10,7 @@ import com.ivanfranchin.moviegrpcserver.movie.exception.MovieAlreadyExistsExcept
 import com.ivanfranchin.moviegrpcserver.movie.exception.MovieNotFoundException;
 import com.ivanfranchin.moviegrpcserver.movie.model.Genre;
 import com.ivanfranchin.moviegrpcserver.movie.model.Movie;
-import com.ivanfranchin.movieserver.movie.model.MovieProto;
+import com.ivanfranchin.moviegrpcserver.proto.MovieProto;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;

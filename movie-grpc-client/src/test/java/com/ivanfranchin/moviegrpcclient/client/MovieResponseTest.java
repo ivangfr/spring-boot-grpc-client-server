@@ -2,7 +2,7 @@ package com.ivanfranchin.moviegrpcclient.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.ivanfranchin.movieserver.movie.model.MovieProto;
+import com.ivanfranchin.moviegrpcclient.proto.MovieProto;
 import org.junit.jupiter.api.Test;
 
 class MovieResponseTest {

@@ -1,22 +1,22 @@
 package com.ivanfranchin.moviegrpcclient.client;
 
 import com.ivanfranchin.moviegrpcclient.command.Genre;
-import com.ivanfranchin.movieserver.movie.model.MovieProto;
-import com.ivanfranchin.movieserver.movie.model.MovieServerGrpc;
+import com.ivanfranchin.moviegrpcclient.proto.MovieProto;
+import com.ivanfranchin.moviegrpcclient.proto.MovieServerGrpc;
 import io.grpc.StatusRuntimeException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
 
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class MovieServiceGrpcClient {
 
-  @GrpcClient("movie-grpc-server")
-  private MovieServerGrpc.MovieServerBlockingStub stub;
+  private final MovieServerGrpc.MovieServerBlockingStub stub;
 
   public List<MovieResponse> getMovies(int page, int size) {
     MovieProto.GetMoviesRequest getMoviesRequest =

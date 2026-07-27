@@ -4,15 +4,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.ivanfranchin.moviegrpcclient.command.Genre;
-import com.ivanfranchin.movieserver.movie.model.MovieProto;
-import com.ivanfranchin.movieserver.movie.model.MovieServerGrpc;
+import com.ivanfranchin.moviegrpcclient.proto.MovieProto;
+import com.ivanfranchin.moviegrpcclient.proto.MovieServerGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.Status;
 import io.grpc.inprocess.InProcessChannelBuilder;
 import io.grpc.inprocess.InProcessServerBuilder;
 import io.grpc.stub.StreamObserver;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.List;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -43,11 +42,8 @@ class MovieServiceGrpcClientTest {
   }
 
   @BeforeEach
-  void setUp() throws Exception {
-    client = new MovieServiceGrpcClient();
-    Field field = MovieServiceGrpcClient.class.getDeclaredField("stub");
-    field.setAccessible(true);
-    field.set(client, MovieServerGrpc.newBlockingStub(channel));
+  void setUp() {
+    client = new MovieServiceGrpcClient(MovieServerGrpc.newBlockingStub(channel));
   }
 
   @Test

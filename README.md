@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-ivan.franchin-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/ivan.franchin)
 
-The goal of this project is to implement two [`Spring Boot`](https://docs.spring.io/spring-boot/index.html) applications using [`gRPC`](https://grpc.io/): the server, called `movie-grpc-server`, and the shell client, named `movie-grpc-client`. The library `movie-grpc-lib` defines the `gRPC` interface that both the server and client applications use.
+The goal of this project is to implement two [`Spring Boot`](https://docs.spring.io/spring-boot/index.html) applications using [`gRPC`](https://grpc.io/): the server, called `movie-grpc-server`, and the shell client, named `movie-grpc-client`.
 
 ## Proof-of-Concepts & Articles
 
@@ -46,29 +46,18 @@ flowchart LR
 
 ## Applications
 
-- **movie-grpc-lib**
-
-  A Maven project that defines the `gRPC` interface (using [`Protocol Buffers`](https://protobuf.dev/)) for managing movies. This library is shared by both the `movie-grpc-server` and `movie-grpc-client` to ensure they can communicate properly over `gRPC`.
-
 - **movie-grpc-server**
 
-  A Spring Boot web application that has `movie-grpc-lib` as a dependency. It implements the `gRPC` functions for managing movies and runs a `gRPC` server to handle `movie-grpc-client` calls. The movies are stored in a [`PostgreSQL`](https://www.postgresql.org/) database.
+  A Spring Boot web application that implements the `gRPC` functions for managing movies and runs a `gRPC` server to handle `movie-grpc-client` calls. The movies are stored in a [`PostgreSQL`](https://www.postgresql.org/) database.
 
 - **movie-grpc-client**
 
-  A Spring Boot shell application that has `movie-grpc-lib` as a dependency. It uses a `stub` to call `movie-grpc-server` functions.
+  A Spring Boot shell application that uses a `stub` to call `movie-grpc-server` functions.
 
 ## Prerequisites
 
 - [`Java 25`](https://www.oracle.com/java/technologies/downloads/#java25) or higher;
 - A containerization tool (e.g., [`Docker`](https://www.docker.com), [`Podman`](https://podman.io), etc.)
-
-## Packaging and Installing movie-grpc-lib
-
-In a terminal and inside the `spring-boot-grpc-client-server` root folder, run the command below:
-```bash
-./mvnw clean install --projects movie-grpc-lib
-```
 
 ## Start PostgreSQL Docker container
 

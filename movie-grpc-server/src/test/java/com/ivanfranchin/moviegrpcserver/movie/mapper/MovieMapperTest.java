@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ivanfranchin.moviegrpcserver.movie.model.Genre;
 import com.ivanfranchin.moviegrpcserver.movie.model.Movie;
-import com.ivanfranchin.movieserver.movie.model.MovieProto;
+import com.ivanfranchin.moviegrpcserver.proto.MovieProto;
 import org.junit.jupiter.api.Test;
 
 class MovieMapperTest {

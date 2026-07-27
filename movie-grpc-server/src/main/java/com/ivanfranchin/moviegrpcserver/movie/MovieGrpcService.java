@@ -4,13 +4,13 @@ import com.ivanfranchin.moviegrpcserver.movie.exception.MovieAlreadyExistsExcept
 import com.ivanfranchin.moviegrpcserver.movie.exception.MovieNotFoundException;
 import com.ivanfranchin.moviegrpcserver.movie.mapper.MovieMapper;
 import com.ivanfranchin.moviegrpcserver.movie.model.Movie;
-import com.ivanfranchin.movieserver.movie.model.MovieProto;
-import com.ivanfranchin.movieserver.movie.model.MovieServerGrpc;
+import com.ivanfranchin.moviegrpcserver.proto.MovieProto;
+import com.ivanfranchin.moviegrpcserver.proto.MovieServerGrpc;
 import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.devh.boot.grpc.server.service.GrpcService;
+import org.springframework.grpc.server.service.GrpcService;
 
 @Slf4j
 @RequiredArgsConstructor

@@ -1,6 +1,6 @@
 package com.ivanfranchin.moviegrpcclient.client;
 
-import com.ivanfranchin.movieserver.movie.model.MovieProto;
+import com.ivanfranchin.moviegrpcclient.proto.MovieProto;
 
 public record MovieResponse(String imdbId, String title, Integer year, String genre) {
 
