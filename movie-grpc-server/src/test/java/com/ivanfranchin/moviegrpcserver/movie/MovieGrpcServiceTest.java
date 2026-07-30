@@ -1,6 +1,7 @@
 package com.ivanfranchin.moviegrpcserver.movie;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.verify;
@@ -11,8 +12,6 @@ import com.ivanfranchin.moviegrpcserver.movie.exception.MovieNotFoundException;
 import com.ivanfranchin.moviegrpcserver.movie.model.Genre;
 import com.ivanfranchin.moviegrpcserver.movie.model.Movie;
 import com.ivanfranchin.moviegrpcserver.proto.MovieProto;
-import io.grpc.Status;
-import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,13 +56,14 @@ class MovieGrpcServiceTest {
     when(movieService.getMovies(anyInt(), anyInt())).thenThrow(new RuntimeException("DB error"));
 
     TestStreamObserver<MovieProto.Movie> observer = new TestStreamObserver<>();
-    movieGrpcService.getMovies(
-        MovieProto.GetMoviesRequest.newBuilder().setPage(0).setSize(5).build(), observer);
 
-    assertThat(observer.completed).isFalse();
-    assertThat(observer.error).isInstanceOf(StatusRuntimeException.class);
-    assertThat(((StatusRuntimeException) observer.error).getStatus().getCode())
-        .isEqualTo(Status.INTERNAL.getCode());
+    assertThatThrownBy(
+            () ->
+                movieGrpcService.getMovies(
+                    MovieProto.GetMoviesRequest.newBuilder().setPage(0).setSize(5).build(),
+                    observer))
+        .isInstanceOf(RuntimeException.class)
+        .hasMessage("DB error");
   }
 
   @Test
@@ -87,13 +87,14 @@ class MovieGrpcServiceTest {
         .thenThrow(new MovieNotFoundException("Movie with id 'not-found' not found"));
 
     TestStreamObserver<MovieProto.Movie> observer = new TestStreamObserver<>();
-    movieGrpcService.getMovie(
-        MovieProto.GetMovieRequest.newBuilder().setImdbId("not-found").build(), observer);
 
-    assertThat(observer.completed).isFalse();
-    assertThat(observer.error).isInstanceOf(StatusRuntimeException.class);
-    assertThat(((StatusRuntimeException) observer.error).getStatus().getCode())
-        .isEqualTo(Status.NOT_FOUND.getCode());
+    assertThatThrownBy(
+            () ->
+                movieGrpcService.getMovie(
+                    MovieProto.GetMovieRequest.newBuilder().setImdbId("not-found").build(),
+                    observer))
+        .isInstanceOf(MovieNotFoundException.class)
+        .hasMessage("Movie with id 'not-found' not found");
   }
 
   @Test
@@ -123,19 +124,19 @@ class MovieGrpcServiceTest {
         .thenThrow(new MovieAlreadyExistsException("Movie with id 'tt001' already exists"));
 
     TestStreamObserver<MovieProto.Movie> observer = new TestStreamObserver<>();
-    movieGrpcService.createMovie(
-        MovieProto.CreateMovieRequest.newBuilder()
-            .setImdbId("tt001")
-            .setTitle("New Movie")
-            .setYear(2024)
-            .setGenre(MovieProto.Genre.ACTION)
-            .build(),
-        observer);
 
-    assertThat(observer.completed).isFalse();
-    assertThat(observer.error).isInstanceOf(StatusRuntimeException.class);
-    assertThat(((StatusRuntimeException) observer.error).getStatus().getCode())
-        .isEqualTo(Status.ALREADY_EXISTS.getCode());
+    assertThatThrownBy(
+            () ->
+                movieGrpcService.createMovie(
+                    MovieProto.CreateMovieRequest.newBuilder()
+                        .setImdbId("tt001")
+                        .setTitle("New Movie")
+                        .setYear(2024)
+                        .setGenre(MovieProto.Genre.ACTION)
+                        .build(),
+                    observer))
+        .isInstanceOf(MovieAlreadyExistsException.class)
+        .hasMessage("Movie with id 'tt001' already exists");
   }
 
   @Test
@@ -144,19 +145,19 @@ class MovieGrpcServiceTest {
         .thenThrow(new RuntimeException("Unexpected error"));
 
     TestStreamObserver<MovieProto.Movie> observer = new TestStreamObserver<>();
-    movieGrpcService.createMovie(
-        MovieProto.CreateMovieRequest.newBuilder()
-            .setImdbId("tt001")
-            .setTitle("New Movie")
-            .setYear(2024)
-            .setGenre(MovieProto.Genre.ACTION)
-            .build(),
-        observer);
 
-    assertThat(observer.completed).isFalse();
-    assertThat(observer.error).isInstanceOf(StatusRuntimeException.class);
-    assertThat(((StatusRuntimeException) observer.error).getStatus().getCode())
-        .isEqualTo(Status.INTERNAL.getCode());
+    assertThatThrownBy(
+            () ->
+                movieGrpcService.createMovie(
+                    MovieProto.CreateMovieRequest.newBuilder()
+                        .setImdbId("tt001")
+                        .setTitle("New Movie")
+                        .setYear(2024)
+                        .setGenre(MovieProto.Genre.ACTION)
+                        .build(),
+                    observer))
+        .isInstanceOf(RuntimeException.class)
+        .hasMessage("Unexpected error");
   }
 
   @Test
@@ -190,13 +191,14 @@ class MovieGrpcServiceTest {
         .thenThrow(new MovieNotFoundException("Movie with id 'not-found' not found"));
 
     TestStreamObserver<MovieProto.Movie> observer = new TestStreamObserver<>();
-    movieGrpcService.updateMovie(
-        MovieProto.UpdateMovieRequest.newBuilder().setImdbId("not-found").build(), observer);
 
-    assertThat(observer.completed).isFalse();
-    assertThat(observer.error).isInstanceOf(StatusRuntimeException.class);
-    assertThat(((StatusRuntimeException) observer.error).getStatus().getCode())
-        .isEqualTo(Status.NOT_FOUND.getCode());
+    assertThatThrownBy(
+            () ->
+                movieGrpcService.updateMovie(
+                    MovieProto.UpdateMovieRequest.newBuilder().setImdbId("not-found").build(),
+                    observer))
+        .isInstanceOf(MovieNotFoundException.class)
+        .hasMessage("Movie with id 'not-found' not found");
   }
 
   @Test
@@ -221,13 +223,14 @@ class MovieGrpcServiceTest {
         .thenThrow(new MovieNotFoundException("Movie with id 'not-found' not found"));
 
     TestStreamObserver<MovieProto.Movie> observer = new TestStreamObserver<>();
-    movieGrpcService.deleteMovie(
-        MovieProto.DeleteMovieRequest.newBuilder().setImdbId("not-found").build(), observer);
 
-    assertThat(observer.completed).isFalse();
-    assertThat(observer.error).isInstanceOf(StatusRuntimeException.class);
-    assertThat(((StatusRuntimeException) observer.error).getStatus().getCode())
-        .isEqualTo(Status.NOT_FOUND.getCode());
+    assertThatThrownBy(
+            () ->
+                movieGrpcService.deleteMovie(
+                    MovieProto.DeleteMovieRequest.newBuilder().setImdbId("not-found").build(),
+                    observer))
+        .isInstanceOf(MovieNotFoundException.class)
+        .hasMessage("Movie with id 'not-found' not found");
   }
 
   private static class TestStreamObserver<T> implements StreamObserver<T> {

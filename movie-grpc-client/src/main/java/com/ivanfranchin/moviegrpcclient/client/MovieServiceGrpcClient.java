@@ -3,7 +3,6 @@ package com.ivanfranchin.moviegrpcclient.client;
 import com.ivanfranchin.moviegrpcclient.command.Genre;
 import com.ivanfranchin.moviegrpcclient.proto.MovieProto;
 import com.ivanfranchin.moviegrpcclient.proto.MovieServerGrpc;
-import io.grpc.StatusRuntimeException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -21,28 +20,18 @@ public class MovieServiceGrpcClient {
   public List<MovieResponse> getMovies(int page, int size) {
     MovieProto.GetMoviesRequest getMoviesRequest =
         MovieProto.GetMoviesRequest.newBuilder().setPage(page).setSize(size).build();
-    try {
-      Iterator<MovieProto.Movie> movieIterator = stub.getMovies(getMoviesRequest);
+    Iterator<MovieProto.Movie> movieIterator = stub.getMovies(getMoviesRequest);
 
-      List<MovieResponse> movieResponses = new ArrayList<>();
-      movieIterator.forEachRemaining(movie -> movieResponses.add(MovieResponse.from(movie)));
-      return movieResponses;
-    } catch (StatusRuntimeException e) {
-      log.error("Error getting movies", e);
-      throw new RuntimeException("Error getting movies: " + e.getStatus().getDescription(), e);
-    }
+    List<MovieResponse> movieResponses = new ArrayList<>();
+    movieIterator.forEachRemaining(movie -> movieResponses.add(MovieResponse.from(movie)));
+    return movieResponses;
   }
 
   public MovieResponse getMovie(String imdbId) {
     MovieProto.GetMovieRequest getMovieRequest =
         MovieProto.GetMovieRequest.newBuilder().setImdbId(imdbId).build();
-    try {
-      MovieProto.Movie movie = stub.getMovie(getMovieRequest);
-      return MovieResponse.from(movie);
-    } catch (StatusRuntimeException e) {
-      log.error("Error getting movie", e);
-      throw new RuntimeException("Error getting movie: " + e.getStatus().getDescription(), e);
-    }
+    MovieProto.Movie movie = stub.getMovie(getMovieRequest);
+    return MovieResponse.from(movie);
   }
 
   public MovieResponse createMovie(String imdbId, String title, Integer year, Genre genre) {
@@ -53,13 +42,8 @@ public class MovieServiceGrpcClient {
             .setYear(year)
             .setGenre(MovieProto.Genre.valueOf(genre.name()))
             .build();
-    try {
-      MovieProto.Movie movie = stub.createMovie(createMoviesRequest);
-      return MovieResponse.from(movie);
-    } catch (StatusRuntimeException e) {
-      log.error("Error creating movie", e);
-      throw new RuntimeException("Error creating movie: " + e.getStatus().getDescription(), e);
-    }
+    MovieProto.Movie movie = stub.createMovie(createMoviesRequest);
+    return MovieResponse.from(movie);
   }
 
   public MovieResponse updateMovie(String imdbId, String title, Integer year, Genre genre) {
@@ -75,24 +59,14 @@ public class MovieServiceGrpcClient {
       builder.setGenre(MovieProto.Genre.valueOf(genre.name()));
     }
     MovieProto.UpdateMovieRequest updateMovieRequest = builder.build();
-    try {
-      MovieProto.Movie movie = stub.updateMovie(updateMovieRequest);
-      return MovieResponse.from(movie);
-    } catch (StatusRuntimeException e) {
-      log.error("Error updating movie", e);
-      throw new RuntimeException("Error updating movie: " + e.getStatus().getDescription(), e);
-    }
+    MovieProto.Movie movie = stub.updateMovie(updateMovieRequest);
+    return MovieResponse.from(movie);
   }
 
   public MovieResponse deleteMovie(String imdbId) {
     MovieProto.DeleteMovieRequest deleteMovieRequest =
         MovieProto.DeleteMovieRequest.newBuilder().setImdbId(imdbId).build();
-    try {
-      MovieProto.Movie movie = stub.deleteMovie(deleteMovieRequest);
-      return MovieResponse.from(movie);
-    } catch (StatusRuntimeException e) {
-      log.error("Error deleting movie", e);
-      throw new RuntimeException("Error deleting movie: " + e.getStatus().getDescription(), e);
-    }
+    MovieProto.Movie movie = stub.deleteMovie(deleteMovieRequest);
+    return MovieResponse.from(movie);
   }
 }
