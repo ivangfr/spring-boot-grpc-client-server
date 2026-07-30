@@ -12,6 +12,7 @@ On [ivangfr.github.io](https://ivangfr.github.io), I have compiled my Proof-of-C
 ## Additional Readings
 
 - \[**Medium**\] [**Implementing gRPC Server and Client using Spring Boot**](https://medium.com/@ivangfr/implementing-grpc-server-and-client-using-spring-boot-4411b26138be)
+- \[**Medium**\] [**Implementing gRPC Server and Client with Spring Boot and Spring gRPC**](https://medium.com/@ivangfr/implementing-grpc-server-and-client-with-spring-boot-and-spring-grpc-3eda996eeb8f)
 
 ## Project Overview
 
